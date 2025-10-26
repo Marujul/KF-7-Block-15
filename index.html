@@ -81,7 +81,7 @@
             font-size: 1.1em;
             line-height: 1.6;
         }
-        
+
         .flashcard-container {
             perspective: 1000px;
             margin: 20px auto;
@@ -130,7 +130,7 @@
         .flashcard-nav {
             margin-top: 15px;
         }
-        
+
         .question {
             text-align: left;
             margin: 15px auto;
@@ -305,7 +305,8 @@
         <p>Klik kartu untuk membalik, gunakan tombol atau ← → untuk navigasi</p>
         
         <div class="flashcard-container">
-            <div class="flashcard" id="flashcard">
+            <!-- Inline onclick provides a robust fallback for click/touch when JS initialization timing is off -->
+            <div class="flashcard" id="flashcard" onclick="this.classList.toggle('is-flipped')" role="button" tabindex="0" aria-pressed="false">
                 <div class="flashcard-face flashcard-front">
                     <span id="flashcard-jp"></span>
                     <span id="flashcard-romaji" class="romaji"></span>
@@ -571,10 +572,10 @@
                     case 'ArrowRight':
                         nextCard();
                         break;
-                    case ' ':
-                        flashcard.classList.toggle('is-flipped');
-                        e.preventDefault();
-                        break;
+                            case ' ':
+                                if (flashcard) flashcard.classList.toggle('is-flipped');
+                                e.preventDefault();
+                                break;
                 }
             }
             
@@ -597,12 +598,32 @@
 
         // --- Initialize Page ---
         document.addEventListener('DOMContentLoaded', () => {
+            // Populate content
             populateMateriTable();
+
+            // Initialize flashcard element and attach handlers (robust for DOM timing)
+            flashcard = document.getElementById('flashcard');
+            if (flashcard) {
+                // clicking/touch handled inline via onclick attribute as a robust fallback
+                // also attach keyboard handler when the flashcard has focus
+                flashcard.addEventListener('keydown', (ev) => {
+                    if (ev.key === 'Enter' || ev.key === ' ') {
+                        ev.preventDefault();
+                        flashcard.classList.toggle('is-flipped');
+                    }
+                });
+            }
+
+            // Flip button for accessibility / touch devices
+            const flipBtn = document.getElementById('flipButton');
+            if (flipBtn) {
+                flipBtn.addEventListener('click', () => {
+                    if (flashcard) flashcard.classList.toggle('is-flipped');
+                });
+            }
+
+            // Show the first card after handlers are set
             showFlashcard(currentCardIndex);
-            
-            flashcard.addEventListener('click', () => {
-                flashcard.classList.toggle('is-flipped');
-            });
 
             // Show keyboard shortcuts briefly
             setTimeout(() => {
