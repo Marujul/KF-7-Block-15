@@ -1,13 +1,12 @@
-// Extra features to add to the script section:
-
-// 1. Sound effects for feedback
+// Extra features with safe audio fallbacks (no external assets required)
+// If you later add real audio files under assets/sounds/, replace these with Audio objects.
 const sounds = {
-    correct: new Audio('data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Eh+LAowCG6FqrgWTRxCN5HypBLgNpCqDTOBXBw8HfCJo="),
-    incorrect: new Audio('data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Eh+LAowCG6FqrgWTRxCN5HypBLgNpCqDTOBXBw8HfCJo='),
-    flip: new Audio('data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Eh+LAowCG6FqrgWTRxCN5HypBLgNpCqDTOBXBw8HfCJo=')
+    correct: { play: () => Promise.resolve() },
+    incorrect: { play: () => Promise.resolve() },
+    flip: { play: () => Promise.resolve() }
 };
 
-// 2. Timer for quiz
+// Timer for quiz
 let quizStartTime;
 let quizTimer;
 
@@ -27,7 +26,7 @@ function stopQuizTimer() {
     return Math.floor((Date.now() - quizStartTime) / 1000);
 }
 
-// 3. Save progress to localStorage
+// Save progress to localStorage
 function saveProgress() {
     const progress = {
         lastCard: currentCardIndex,
@@ -57,7 +56,7 @@ function loadProgress() {
     }
 }
 
-// 4. Motivational streaks
+// Motivational streaks
 let streak = parseInt(localStorage.getItem('streak') || '0');
 let lastVisit = localStorage.getItem('lastVisit');
 
@@ -81,17 +80,18 @@ function updateStreak() {
     }
 }
 
-// 5. Enhanced feedback
+// Enhanced feedback
 function showFeedback(type, message) {
     const feedback = document.createElement('div');
     feedback.className = `feedback ${type}`;
     feedback.textContent = message;
+    feedback.setAttribute('role', 'alert');
     feedback.style.animation = 'fadeInOut 2s forwards';
     document.body.appendChild(feedback);
     setTimeout(() => feedback.remove(), 2000);
 }
 
-// Add these to your existing functions:
+// Add these to existing functions:
 function checkAnswers() {
     // ... existing checkAnswers code ...
     
