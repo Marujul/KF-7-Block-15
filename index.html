@@ -442,8 +442,7 @@
 
         // --- Fungsi Flashcard ---
         let currentCardIndex = 0;
-    // declare flashcard variable here and initialize when DOM is ready
-    let flashcard;
+        const flashcard = document.getElementById('flashcard');
 
         function showFlashcard(index) {
             const card = vocabulary[index];
@@ -487,7 +486,7 @@
             const total = document.querySelectorAll('.question').length;
             const answered = document.querySelectorAll('input[type="radio"]:checked').length;
             const progressFill = document.querySelector('.progress-fill');
-            if (progressFill) progressFill.style.width = `${(answered / total) * 100}%`;
+            progressFill.style.width = `${(answered / total) * 100}%`;
         }
 
         function checkAnswers() {
@@ -573,9 +572,7 @@
                         nextCard();
                         break;
                     case ' ':
-                        if (flashcard) {
-                            flashcard.classList.toggle('is-flipped');
-                        }
+                        flashcard.classList.toggle('is-flipped');
                         e.preventDefault();
                         break;
                 }
@@ -600,24 +597,12 @@
 
         // --- Initialize Page ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize flashcard element and attach handlers (robust for DOM timing)
-            flashcard = document.getElementById('flashcard');
-            if (flashcard) {
-                flashcard.addEventListener('click', () => {
-                    flashcard.classList.toggle('is-flipped');
-                });
-            }
-
             populateMateriTable();
             showFlashcard(currentCardIndex);
-
-            // Flip button for accessibility / touch devices
-            const flipBtn = document.getElementById('flipButton');
-            if (flipBtn) {
-                flipBtn.addEventListener('click', () => {
-                    if (flashcard) flashcard.classList.toggle('is-flipped');
-                });
-            }
+            
+            flashcard.addEventListener('click', () => {
+                flashcard.classList.toggle('is-flipped');
+            });
 
             // Show keyboard shortcuts briefly
             setTimeout(() => {
