@@ -3,265 +3,588 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Belajar kosakata Bahasa Jepang sehari-hari dengan flashcard dan kuis interaktif">
     <title>まいにちのせいかつ - Kehidupan Sehari-hari</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #fdfaf6;
-            color: #333;
+        :root {
+            --primary: #f4b183;
+            --primary-dark: #e38d59;
+            --secondary: #fdebd0;
+            --accent: #d2691e;
+            --light: #fff3e6;
+            --text: #333;
+            --white: #fff;
+            --success: #4CAF50;
+            --error: #f44336;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        header {
-            background-color: #f4b183;
-            color: white;
-            text-align: center;
-            padding: 1.2em 0;
-        }
-        nav {
-            text-align: center;
-            margin-top: 20px;
-        }
-        button {
-            background-color: #f4b183;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            margin: 10px;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button:hover {
-            background-color: #e38d59;
-        }
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        section {
-            display: none;
-            padding: 20px;
-            text-align: center;
-        }
-        table {
-            margin: 20px auto;
-            border-collapse: collapse;
-            width: 85%;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            font-size: 1.1em;
-        }
-        th {
-            background-color: #fdebd0;
-        }
-        .visible {
-            display: block;
-        }
-        #intro {
-            text-align: left;
-            max-width: 700px;
-            margin: 20px auto;
-            background-color: white;
-            padding: 25px;
-            border-radius: 8px;
-            border: 1px solid #fdebd0;
-        }
-        #intro h2 {
-            color: #d2691e;
-            border-bottom: 2px solid #f4b183;
-            padding-bottom: 10px;
-        }
-        #intro p {
-            font-size: 1.1em;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fdfaf6 0%, #f5f0e8 100%);
+            color: var(--text);
             line-height: 1.6;
+            min-height: 100vh;
         }
 
-        .flashcard-container {
-            perspective: 1000px;
-            margin: 20px auto;
-            width: 300px;
-            height: 180px;
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        .flashcard {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s;
-            cursor: pointer;
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 700;
         }
-        .flashcard.is-flipped {
-            transform: rotateY(180deg);
+
+        header p {
+            margin: 0.5rem 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
         }
-        .flashcard-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
+
+        nav {
             display: flex;
             justify-content: center;
-            align-items: center;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            font-size: 1.5em;
-        }
-        .flashcard-front {
-            background-color: #fff3e6;
-            color: #d2691e;
-            flex-direction: column;
-        }
-        .flashcard-front .romaji {
-            font-size: 0.7em;
-            color: #333;
-            margin-top: 10px;
-        }
-        .flashcard-back {
-            background-color: #fdebd0;
-            color: #333;
-            transform: rotateY(180deg);
-            font-size: 1.3em;
-        }
-        .flashcard-nav {
-            margin-top: 15px;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1.5rem 1rem;
         }
 
-        .question {
-            text-align: left;
-            margin: 15px auto;
-            width: 80%;
-            background-color: #fff3e6;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 5px solid #f4b183;
-            transition: 0.3s;
-        }
-        .question p {
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-top: 0;
-        }
-        .question label {
-            display: block;
-            margin: 5px 0;
-            padding: 5px;
-            border-radius: 5px;
+        .nav-btn {
+            background: var(--white);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-        }
-        .question label:hover {
-            background-color: #fdebd0;
-        }
-        .question.correct {
-            background-color: #e6ffed;
-            border-left: 5px solid #4caf50;
-        }
-        .question.incorrect {
-            background-color: #ffebee;
-            border-left: 5px solid #f44336;
-        }
-        .correct-answer {
-            font-weight: bold;
-            color: #155724;
-            background-color: #d4edda;
-            padding: 6px 8px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-top: 6px;
-        }
-        #score {
-            font-weight: bold;
-            font-size: 1.2em;
-            color: #d2691e;
-            margin-top: 20px;
-        }
-        #resetButton {
-            display: none;
-            background-color: #757575;
-        }
-        #resetButton:hover {
-            background-color: #505050;
+            transition: all 0.3s ease;
         }
 
-        .progress-bar {
-            width: 85%;
-            height: 10px;
-            background-color: #fdebd0;
-            border-radius: 5px;
-            margin: 10px auto;
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        section {
+            display: none;
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            position: relative;
+            font-size: 1.8rem;
+        }
+
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+            margin: 0.5rem auto;
+            border-radius: 2px;
+        }
+
+        /* Intro Section */
+        .welcome-card {
+            background: linear-gradient(135deg, var(--light) 0%, var(--secondary) 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--primary);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            color: var(--accent);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Materi Section */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .controls button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .vocab-table-container {
+            overflow-x: auto;
+            margin: 0 auto 3rem;
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 10px;
             overflow: hidden;
         }
 
-        .progress-fill {
-            height: 100%;
-            background-color: #f4b183;
-            transition: width 0.3s ease;
-            width: 0;
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
         }
 
-        .keyboard-shortcuts {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 0.9em;
-            display: none;
-            z-index: 1000;
+        th {
+            background: var(--primary);
+            color: var(--white);
+            font-weight: 600;
         }
 
-        .keyboard-shortcuts.visible {
-            display: block;
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
 
-        @keyframes celebrate {
+        tr:hover {
+            background-color: var(--light);
+        }
+
+        .grammar-patterns, .dialog-section {
+            margin-top: 3rem;
+        }
+
+        .pattern-card, .dialog-card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--primary);
+        }
+
+        .pattern-card h3, .dialog-card h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        .example {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .japanese {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .romaji {
+            font-style: italic;
+            color: #666;
+            margin: 0.5rem 0;
+        }
+
+        .dialog-line {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .dialog-line:nth-child(even) {
+            background: var(--light);
+        }
+
+        .dialog-speaker {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Latihan Section */
+        #latihan {
+            max-width: 800px;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        #quiz-timer {
+            background: var(--primary);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .timer-warning {
+            background: #ff9800 !important;
+            animation: pulse 1s infinite;
+        }
+
+        .timer-danger {
+            background: #f44336 !important;
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
 
-        .celebrate {
-            animation: celebrate 0.5s ease;
+        .progress-container {
+            margin: 1.5rem 0;
         }
 
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #1a1a1a;
-                color: #e0e0e0;
-            }
-            
-            .question, #intro {
-                background-color: #2d2d2d;
-                border-color: #404040;
-            }
-            
-            .flashcard-front {
-                background-color: #2d2d2d;
-                color: #f4b183;
-            }
-            
-            .flashcard-back {
-                background-color: #404040;
-                color: #e0e0e0;
-            }
-            
-            th {
-                background-color: #404040;
-            }
-            
-            td {
-                border-color: #404040;
-            }
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
 
-            .progress-bar {
-                background-color: #404040;
-            }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+            transition: width 0.3s ease;
+            width: 0;
+        }
+
+        .progress-text {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .question {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .question p {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 0;
+            color: var(--accent);
+        }
+
+        .question label {
+            display: block;
+            margin: 0.5rem 0;
+            padding: 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .question label:hover {
+            background: var(--light);
+            border-color: var(--primary);
+        }
+
+        .question input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+
+        .question.correct {
+            background: #e8f5e9;
+            border-left: 4px solid var(--success);
+        }
+
+        .question.incorrect {
+            background: #ffebee;
+            border-left: 4px solid var(--error);
+        }
+
+        .correct-answer {
+            font-weight: bold;
+            color: var(--success);
+            background: #e8f5e9;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .quiz-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .quiz-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .quiz-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #resetButton {
+            background: #757575;
+        }
+
+        #resetButton:hover {
+            background: #5a5a5a;
+        }
+
+        #score {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Game Mencocokkan */
+        #matching-game {
+            text-align: center;
+        }
+
+        .game-instructions {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .word-column, .meaning-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .word-item, .meaning-item {
+            background: var(--white);
+            padding: 1.2rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+
+        .word-item:hover, .meaning-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .word-item.selected, .meaning-item.selected {
+            border-color: var(--primary);
+            background: var(--light);
+        }
+
+        .word-item.matched, .meaning-item.matched {
+            background: var(--success);
+            color: white;
+            cursor: default;
+            transform: scale(0.95);
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .game-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            background: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        /* Feedback */
+        .feedback {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            z-index: 1000;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: fadeInOut 2s forwards;
+        }
+
+        .feedback.success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .feedback.error {
+            background: var(--error);
+            color: var(--white);
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -20px); }
+            10% { opacity: 1; transform: translate(-50%, 0); }
+            90% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, 20px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            .nav-btn { padding: 0.7rem 1.2rem; font-size: 0.9rem; }
+            .section-title { font-size: 1.5rem; }
+            .quiz-header { flex-direction: column; align-items: center; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .matching-container { grid-template-columns: 1fr; }
+            .game-stats { flex-direction: column; gap: 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            header { padding: 1rem 0; }
+            header h1 { font-size: 1.5rem; }
+            nav { margin: 1rem 0.5rem; }
+            .nav-btn { padding: 0.6rem 1rem; font-size: 0.85rem; }
+            section { padding: 1rem 0.5rem; }
         }
     </style>
 </head>
@@ -272,366 +595,699 @@
     </header>
 
     <nav>
-        <button onclick="showSection('intro')">🏠 Beranda</button>
-        <button onclick="showSection('materi')">📘 Materi</button>
-        <button onclick="showSection('flashcard')">📇 Flashcard</button>
-        <button onclick="showSection('latihan')">📝 Latihan Soal</button>
+        <button class="nav-btn active" onclick="showSection('intro')">🏠 Beranda</button>
+        <button class="nav-btn" onclick="showSection('materi')">📘 Materi</button>
+        <button class="nav-btn" onclick="showSection('matching-game')">🎮 Game Mencocokkan</button>
+        <button class="nav-btn" onclick="showSection('latihan')">📝 Latihan Soal</button>
     </nav>
 
     <section id="intro" class="visible">
-        <h2>Selamat Datang! (ようこそ！)</h2>
-        <p>Halaman ini dirancang untuk membantu Anda mempelajari kosakata bahasa Jepang dasar yang berkaitan dengan "Kehidupan Sehari-hari" (まいにちのせいかつ).</p>
-        <p>Anda dapat menggunakan menu di atas untuk:</p>
-        <ul>
-            <li><strong>📘 Materi:</strong> Melihat daftar lengkap kosakata, romaji, dan artinya.</li>
-            <li><strong>📇 Flashcard:</strong> Menguji ingatan Anda dengan kartu bolak-balik.</li>
-            <li><strong>📝 Latihan Soal:</strong> Mengerjakan kuis pilihan ganda untuk mengukur pemahaman Anda.</li>
-        </ul>
-        <p>Pilih salah satu bagian untuk memulai. がんばってください！ (Ganbatte kudasai! - Semangat!)</p>
+        <h2 class="section-title">Selamat Datang! (ようこそ！)</h2>
+        
+        <div class="welcome-card">
+            <p>Halaman ini dirancang untuk membantu Anda mempelajari kosakata bahasa Jepang dasar yang berkaitan dengan "Kehidupan Sehari-hari" (まいにちのせいかつ).</p>
+            <p>Pilih salah satu bagian untuk memulai. がんばってください！ (Ganbatte kudasai! - Semangat!)</p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>📘 Materi</h3>
+                <p>Melihat daftar lengkap kosakata, romaji, arti, dan pola kalimat bahasa Jepang.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎮 Game Mencocokkan</h3>
+                <p>Uji ingatan Anda dengan mencocokkan kosakata Jepang dengan artinya dalam bahasa Indonesia.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📝 Latihan Soal</h3>
+                <p>Mengerjakan kuis pilihan ganda untuk mengukur pemahaman Anda.</p>
+            </div>
+        </div>
     </section>
 
     <section id="materi">
-        <h2>📖 Kosakata Kegiatan Sehari-hari</h2>
-        <table>
-            <thead>
-                <tr><th>日本語</th><th>Romaji</th><th>Arti</th></tr>
-            </thead>
-            <tbody id="materi-body"></tbody>
-        </table>
-    </section>
-
-    <section id="flashcard">
-        <h2>📇 Flashcard</h2>
-        <p>Klik kartu untuk membalik, gunakan tombol atau ← → untuk navigasi</p>
+        <h2 class="section-title">📖 Kosakata Kegiatan Sehari-hari</h2>
         
-        <div class="flashcard-container">
-            <!-- Inline onclick provides a robust fallback for click/touch when JS initialization timing is off -->
-            <div class="flashcard" id="flashcard" onclick="this.classList.toggle('is-flipped')" role="button" tabindex="0" aria-pressed="false">
-                <div class="flashcard-face flashcard-front">
-                    <span id="flashcard-jp"></span>
-                    <span id="flashcard-romaji" class="romaji"></span>
+        <div class="controls">
+            <button id="printMateriButton">🖨️ Cetak Materi</button>
+        </div>
+
+        <div class="vocab-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>にほんご</th>
+                        <th>Romaji</th>
+                        <th>Arti</th>
+                    </tr>
+                </thead>
+                <tbody id="materi-body">
+                    <!-- Data akan diisi JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="grammar-patterns">
+            <h2 class="section-title">📚 Pola Kalimat</h2>
+            
+            <div class="pattern-card">
+                <h3>Pola: Subjek + Partikel + Kata Kerja (-masu)</h3>
+                <div class="example">
+                    <div class="japanese">わたしは がっこうへ いきます。</div>
+                    <div class="romaji">Watashi wa gakkō e ikimasu.</div>
+                    <div>Arti: Saya pergi ke sekolah.</div>
                 </div>
-                <div class="flashcard-face flashcard-back">
-                    <span id="flashcard-arti"></span>
+            </div>
+            
+            <div class="pattern-card">
+                <h3>Pola: Waktu + Partikel + Kegiatan</h3>
+                <div class="example">
+                    <div class="japanese">あさ 7じに おきます。</div>
+                    <div class="romaji">Asa shichi-ji ni okimasu.</div>
+                    <div>Arti: Saya bangun tidur jam 7 pagi.</div>
+                </div>
+            </div>
+            
+            <div class="pattern-card">
+                <h3>Pola: Kata Benda + を + Kata Kerja</h3>
+                <div class="example">
+                    <div class="japanese">あさごはんを たべます。</div>
+                    <div class="romaji">Asagohan o tabemasu.</div>
+                    <div>Arti: Saya makan sarapan.</div>
+                </div>
+            </div>
+
+            <div class="pattern-card">
+                <h3>Partikel Penting</h3>
+                <div class="example">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Partikel</th>
+                                <th>Fungsi</th>
+                                <th>Contoh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>は (wa)</td>
+                                <td>Penanda subjek</td>
+                                <td>わたし<b>は</b>がくせいです</td>
+                            </tr>
+                            <tr>
+                                <td>を (o)</td>
+                                <td>Penanda objek</td>
+                                <td>ごはん<b>を</b>たべます</td>
+                            </tr>
+                            <tr>
+                                <td>に (ni)</td>
+                                <td>Penanda waktu/tempat</td>
+                                <td>がっこう<b>に</b>いきます</td>
+                            </tr>
+                            <tr>
+                                <td>で (de)</td>
+                                <td>Penanda tempat kegiatan</td>
+                                <td>としょかん<b>で</b>べんきょうします</td>
+                            </tr>
+                            <tr>
+                                <td>へ (e)</td>
+                                <td>Penanda arah</td>
+                                <td>にほん<b>へ</b>いきます</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        
-        <div class="flashcard-nav">
-            <button onclick="prevCard()">← Sebelumnya</button>
-            <button onclick="nextCard()">Berikutnya →</button>
+
+        <div class="dialog-section">
+            <h2 class="section-title">💬 Contoh Percakapan</h2>
+            <div class="dialog-card">
+                <h3>Percakapan Sehari-hari</h3>
+                <div class="dialog-line">
+                    <div class="dialog-speaker">やまださん:</div>
+                    <div class="japanese">おはようございます。</div>
+                    <div class="romaji">Ohayō gozaimasu.</div>
+                    <div>Selamat pagi.</div>
+                </div>
+                <div class="dialog-line">
+                    <div class="dialog-speaker">たなかさん:</div>
+                    <div class="japanese">おはよう。いまから がっこうへ いきます。</div>
+                    <div class="romaji">Ohayō. Ima kara gakkō e ikimasu.</div>
+                    <div>Selamat pagi. Sekarang akan pergi ke sekolah.</div>
+                </div>
+            </div>
         </div>
-        <p id="card-counter"></p>
+    </section>
+
+    <section id="matching-game">
+        <h2 class="section-title">🎮 Game Mencocokkan</h2>
+        
+        <div class="game-instructions">
+            <p><strong>Cara Bermain:</strong> Pilih kata dalam bahasa Jepang di kolom kiri, lalu pilih artinya yang sesuai di kolom kanan. Cocokkan semua pasangan dengan benar!</p>
+        </div>
+
+        <div class="matching-container">
+            <div class="word-column" id="word-column">
+                <!-- Kata Jepang akan diisi JavaScript -->
+            </div>
+            <div class="meaning-column" id="meaning-column">
+                <!-- Arti Indonesia akan diisi JavaScript -->
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <button class="game-btn" onclick="resetMatchingGame()">🔄 Ulangi Game</button>
+            <button class="game-btn" onclick="checkAllMatches()">✓ Periksa</button>
+        </div>
+
+        <div class="game-stats">
+            <div class="stat-item">
+                <div class="stat-label">Tercocokkan</div>
+                <div class="stat-value" id="matched-count">0/10</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Percobaan</div>
+                <div class="stat-value" id="attempt-count">0</div>
+            </div>
+        </div>
     </section>
 
     <section id="latihan">
-        <h2>🧠 Latihan Soal Pilihan Ganda</h2>
-        <div class="progress-bar">
-            <div class="progress-fill"></div>
+        <h2 class="section-title">📝 Latihan Soal</h2>
+        
+        <div class="quiz-header">
+            <div id="quiz-timer">⏱️ 03:00</div>
+            <button class="quiz-btn" onclick="startQuiz()" id="startButton">▶️ Mulai Kuis</button>
         </div>
 
-        <form id="quizForm">
-            <div class="question" data-id="1">
-                <p>1. おきます</p>
-                <label><input type="radio" name="q1" value="a"> a. Tidur</label><br>
-                <label><input type="radio" name="q1" value="b"> b. Bangun tidur</label><br>
-                <label><input type="radio" name="q1" value="c"> c. Belajar</label>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="quiz-progress"></div>
             </div>
+            <div class="progress-text" id="progress-text">Soal 0/10</div>
+        </div>
 
-            <div class="question" data-id="2">
-                <p>2. はをみがきます</p>
-                <label><input type="radio" name="q2" value="a"> a. Menggosok gigi</label><br>
-                <label><input type="radio" name="q2" value="b"> b. Makan pagi</label><br>
-                <label><input type="radio" name="q2" value="c"> c. Pergi ke sekolah</label>
+        <div id="quiz-container">
+            <div style="text-align: center; padding: 2rem; color: #666;">
+                <p>Klik "Mulai Kuis" untuk memulai timer dan mengerjakan 10 soal pilihan ganda</p>
+                <p><strong>Waktu: 3 menit</strong></p>
             </div>
+        </div>
 
-            <div class="question" data-id="3">
-                <p>3. べんきょうします</p>
-                <label><input type="radio" name="q3" value="a"> a. Belajar</label><br>
-                <label><input type="radio" name="q3" value="b"> b. Tidur</label><br>
-                <label><input type="radio" name="q3" value="c"> c. Mandi</label>
-            </div>
+        <div class="quiz-actions">
+            <button class="quiz-btn" onclick="submitQuiz()" id="submitButton" disabled>📤 Kirim Jawaban</button>
+            <button class="quiz-btn" onclick="resetQuiz()" id="resetButton" style="display: none;">🔄 Ulangi Kuis</button>
+        </div>
 
-            <div class="question" data-id="4">
-                <p>4. がっこうへいきます</p>
-                <label><input type="radio" name="q4" value="a"> a. Pergi ke sekolah</label><br>
-                <label><input type="radio" name="q4" value="b"> b. Belajar</label><br>
-                <label><input type="radio" name="q4" value="c"> c. Makan malam</label>
-            </div>
-
-            <div class="question" data-id="5">
-                <p>5. おふろにはいります</p>
-                <label><input type="radio" name="q5" value="a"> a. Mandi</label><br>
-                <label><input type="radio" name="q5" value="b"> b. Makan</label><br>
-                <label><input type="radio" name="q5" value="c"> c. Menonton TV</label>
-            </div>
-
-            <div class="question" data-id="6">
-                <p>6. ねます</p>
-                <label><input type="radio" name="q6" value="a"> a. Tidur</label><br>
-                <label><input type="radio" name="q6" value="b"> b. Bangun tidur</label><br>
-                <label><input type="radio" name="q6" value="c"> c. Belajar</label>
-            </div>
-
-            <div class="question" data-id="7">
-                <p>7. かおをあらいます</p>
-                <label><input type="radio" name="q7" value="a"> a. Mencuci muka</label><br>
-                <label><input type="radio" name="q7" value="b"> b. Menggosok gigi</label><br>
-                <label><input type="radio" name="q7" value="c"> c. Makan siang</label>
-            </div>
-
-            <div class="question" data-id="8">
-                <p>8. テレビをみます</p>
-                <label><input type="radio" name="q8" value="a"> a. Menonton TV</label><br>
-                <label><input type="radio" name="q8" value="b"> b. Membaca buku</label><br>
-                <label><input type="radio" name="q8" value="c"> c. Pergi ke sekolah</label>
-            </div>
-
-            <div class="question" data-id="9">
-                <p>9. ひるごはんをたべます</p>
-                <label><input type="radio" name="q9" value="a"> a. Makan pagi</label><br>
-                <label><input type="radio" name="q9" value="b"> b. Makan siang</label><br>
-                <label><input type="radio" name="q9" value="c"> c. Makan malam</label>
-            </div>
-
-            <div class="question" data-id="10">
-                <p>10. ともだちとあそびます</p>
-                <label><input type="radio" name="q10" value="a"> a. Bermain dengan teman</label><br>
-                <label><input type="radio" name="q10" value="b"> b. Belajar</label><br>
-                <label><input type="radio" name="q10" value="c"> c. Pergi tidur</label>
-            </div>
-
-            <button type="button" onclick="checkAnswers()" id="submitButton">Lihat Nilai</button>
-            <button type="button" onclick="resetQuiz()" id="resetButton">Coba Lagi</button>
-        </form>
-
-        <div id="score" aria-live="polite"></div>
+        <div id="score"></div>
     </section>
 
-    <div class="keyboard-shortcuts">
-        Keyboard: ← → (navigasi) | Space (balik kartu) | 1-4 (menu)
-    </div>
+    <div id="feedback" class="feedback" style="display: none;"></div>
 
     <script>
-        // --- Data Kosakata ---
-        const vocabulary = [
-            { jp: "おきます", romaji: "okimasu", arti: "Bangun tidur" },
-            { jp: "はをみがきます", romaji: "ha o migakimasu", arti: "Menggosok gigi" },
-            { jp: "かおをあらいます", romaji: "kao o araimasu", arti: "Mencuci muka" },
-            { jp: "あさごはんをたべます", romaji: "asagohan o tabemasu", arti: "Makan pagi" },
-            { jp: "がっこうへいきます", romaji: "gakkō e ikimasu", arti: "Pergi ke sekolah" },
-            { jp: "べんきょうします", romaji: "benkyō shimasu", arti: "Belajar" },
-            { jp: "ひるごはんをたべます", romaji: "hirugohan o tabemasu", arti: "Makan siang" },
-            { jp: "ともだちとあそびます", romaji: "tomodachi to asobimasu", arti: "Bermain dengan teman" },
-            { jp: "ばんごはんをたべます", romaji: "bangohan o tabemasu", arti: "Makan malam" },
-            { jp: "おふろにはいります", romaji: "ofuro ni hairimasu", arti: "Mandi" },
-            { jp: "テレビをみます", romaji: "terebi o mimasu", arti: "Menonton TV" },
-            { jp: "ねます", romaji: "nemasu", arti: "Tidur" }
+        // Data kosakata (TANPA KANJI)
+        const vocabData = [
+            { japanese: "おきます", romaji: "okimasu", meaning: "bangun tidur" },
+            { japanese: "あさごはんを たべます", romaji: "asagohan o tabemasu", meaning: "makan sarapan" },
+            { japanese: "はを みがきます", romaji: "ha o migakimasu", meaning: "menggosok gigi" },
+            { japanese: "かおを あらいます", romaji: "kao o araimasu", meaning: "mencuci muka" },
+            { japanese: "がっこうへ いきます", romaji: "gakkō e ikimasu", meaning: "pergi ke sekolah" },
+            { japanese: "べんきょうします", romaji: "benkyō shimasu", meaning: "belajar" },
+            { japanese: "ひるごはんを たべます", romaji: "hirugohan o tabemasu", meaning: "makan siang" },
+            { japanese: "うちへ かえります", romaji: "uchi e kaerimasu", meaning: "pulang ke rumah" },
+            { japanese: "しゅくだいを します", romaji: "shukudai o shimasu", meaning: "mengerjakan PR" },
+            { japanese: "ばんごはんを たべます", romaji: "bangohan o tabemasu", meaning: "makan malam" },
+            { japanese: "おふろに はいります", romaji: "ofuro ni hairimasu", meaning: "mandi" },
+            { japanese: "ねます", romaji: "nemasu", meaning: "tidur" }
         ];
 
-        // --- Fungsi Navigasi ---
-        function showSection(id) {
+        // Data soal kuis (10 soal pilihan ganda)
+        const quizQuestions = [
+            {
+                question: "Apa arti dari 'おきます'?",
+                options: ["Makan sarapan", "Bangun tidur", "Pergi ke sekolah", "Mandi"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana mengatakan 'makan sarapan' dalam bahasa Jepang?",
+                options: ["はを みがきます", "あさごはんを たべます", "べんきょうします", "おきます"],
+                correct: 1
+            },
+            {
+                question: "Apa arti dari 'がっこうへ いきます'?",
+                options: ["Pulang ke rumah", "Pergi ke sekolah", "Makan siang", "Belajar"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana mengatakan 'mengerjakan PR' dalam bahasa Jepang?",
+                options: ["しゅくだいを します", "ばんごはんを たべます", "おふろに はいります", "ねます"],
+                correct: 0
+            },
+            {
+                question: "Apa arti dari 'はを みがきます'?",
+                options: ["Mencuci muka", "Menggosok gigi", "Mandi", "Tidur"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana mengatakan 'pulang ke rumah' dalam bahasa Jepang?",
+                options: ["がっこうへ いきます", "うちへ かえります", "べんきょうします", "おきます"],
+                correct: 1
+            },
+            {
+                question: "Apa arti dari 'ばんごはんを たべます'?",
+                options: ["Makan sarapan", "Makan siang", "Makan malam", "Makan camilan"],
+                correct: 2
+            },
+            {
+                question: "Bagaimana mengatakan 'mandi' dalam bahasa Jepang?",
+                options: ["かおを あらいます", "はを みがきます", "おふろに はいります", "ねます"],
+                correct: 2
+            },
+            {
+                question: "Apa arti dari 'ひるごはんを たべます'?",
+                options: ["Makan sarapan", "Makan siang", "Makan malam", "Makan camilan"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana mengatakan 'belajar' dalam bahasa Jepang?",
+                options: ["おきます", "たべます", "べんきょうします", "いきます"],
+                correct: 2
+            }
+        ];
+
+        // Variabel kuis
+        let quizTime = 180; // 3 menit dalam detik
+        let timerInterval;
+        let quizStarted = false;
+        let userAnswers = [];
+        let currentQuestion = 0;
+
+        // Fungsi untuk menampilkan section - PERBAIKAN UTAMA
+        function showSection(sectionId) {
+            console.log("Memuat section:", sectionId); // Untuk debugging
+            
+            // Sembunyikan semua section
             document.querySelectorAll('section').forEach(section => {
                 section.classList.remove('visible');
             });
-            document.getElementById(id).classList.add('visible');
             
-            if (id === 'latihan') {
-                updateProgressBar();
-            }
-        }
-
-        // --- Fungsi Flashcard ---
-        let currentCardIndex = 0;
-        const flashcard = document.getElementById('flashcard');
-
-        function showFlashcard(index) {
-            const card = vocabulary[index];
-            document.getElementById('flashcard-jp').textContent = card.jp;
-            document.getElementById('flashcard-romaji').textContent = card.romaji;
-            document.getElementById('flashcard-arti').textContent = card.arti;
-            document.getElementById('card-counter').textContent = `${index + 1} / ${vocabulary.length}`;
-            flashcard.classList.remove('is-flipped');
-        }
-
-        function nextCard() {
-            currentCardIndex = (currentCardIndex + 1) % vocabulary.length;
-            showFlashcard(currentCardIndex);
-        }
-
-        function prevCard() {
-            currentCardIndex = (currentCardIndex - 1 + vocabulary.length) % vocabulary.length;
-            showFlashcard(currentCardIndex);
-        }
-
-        // --- Fungsi Materi ---
-        function populateMateriTable() {
-            const tableBody = document.getElementById('materi-body');
-            vocabulary.forEach(item => {
-                const row = `<tr>
-                    <td>${item.jp}</td>
-                    <td>${item.romaji}</td>
-                    <td>${item.arti}</td>
-                </tr>`;
-                tableBody.innerHTML += row;
-            });
-        }
-
-        // --- Fungsi Quiz ---
-        const correctAnswers = {
-            q1: "b", q2: "a", q3: "a", q4: "a", q5: "a",
-            q6: "a", q7: "a", q8: "a", q9: "b", q10: "a"
-        };
-
-        function updateProgressBar() {
-            const total = document.querySelectorAll('.question').length;
-            const answered = document.querySelectorAll('input[type="radio"]:checked').length;
-            const progressFill = document.querySelector('.progress-fill');
-            progressFill.style.width = `${(answered / total) * 100}%`;
-        }
-
-        function checkAnswers() {
-            resetStyles();
-            let score = 0;
-            
-            document.querySelectorAll('.question').forEach(questionDiv => {
-                const id = questionDiv.getAttribute('data-id');
-                const qName = `q${id}`;
-                const selected = document.querySelector(`input[name="${qName}"]:checked`);
-                
-                if (selected) {
-                    if (selected.value === correctAnswers[qName]) {
-                        score++;
-                        questionDiv.classList.add('correct');
-                        questionDiv.classList.add('celebrate');
-                        setTimeout(() => questionDiv.classList.remove('celebrate'), 500);
-                    } else {
-                        questionDiv.classList.add('incorrect');
-                        const correctLabel = document.querySelector(`input[name="${qName}"][value="${correctAnswers[qName]}"]`).parentElement;
-                        correctLabel.classList.add('correct-answer');
-                    }
-                } else {
-                    questionDiv.classList.add('incorrect');
-                    const correctLabel = document.querySelector(`input[name="${qName}"][value="${correctAnswers[qName]}"]`).parentElement;
-                    correctLabel.classList.add('correct-answer');
-                }
-            });
-
-            let feedback = '';
-            if (score === 10) {
-                feedback = 'すごい！(Sugoi!) Sempurna! 🎉';
-            } else if (score >= 8) {
-                feedback = 'とてもいいですね！(Totemo ii desu ne!) Sangat bagus! 🌟';
-            } else if (score >= 5) {
-                feedback = 'がんばって！(Ganbatte!) Ayo semangat, coba lagi! 💪';
+            // Tampilkan section yang dipilih
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('visible');
             } else {
-                feedback = 'もういちど！(Mou ichido!) Mari coba sekali lagi! 📚';
+                console.error("Section tidak ditemukan:", sectionId);
+                return;
             }
+            
+            // Update tombol navigasi
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Aktifkan tombol yang sesuai - CARI BERDASARKAN ONCLICK
+            const activeButton = Array.from(document.querySelectorAll('.nav-btn')).find(btn => {
+                return btn.getAttribute('onclick') === `showSection('${sectionId}')`;
+            });
+            
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+            
+            // Load data jika diperlukan
+            if (sectionId === 'materi') {
+                loadMateriData();
+            } else if (sectionId === 'matching-game') {
+                initMatchingGame();
+            } else if (sectionId === 'latihan') {
+                // Reset kuis jika perlu
+                resetQuiz();
+            }
+        }
 
-            document.getElementById("score").innerHTML = `Nilai kamu: ${score}/10<br>${feedback}`;
+        // Load data materi
+        function loadMateriData() {
+            const tbody = document.getElementById('materi-body');
+            if (!tbody) {
+                console.error("Element materi-body tidak ditemukan");
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            vocabData.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.japanese}</td>
+                    <td>${item.romaji}</td>
+                    <td>${item.meaning}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // ==================== FUNGSI KUIS ====================
+
+        function startQuiz() {
+            if (quizStarted) return;
+            
+            quizStarted = true;
+            quizTime = 180; // Reset ke 3 menit
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            currentQuestion = 0;
+            
+            document.getElementById('submitButton').disabled = false;
+            document.getElementById('startButton').disabled = true;
+            
+            // Mulai timer
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer(); // Update immediately
+            
+            // Load soal kuis
+            loadQuizQuestions();
+            
+            showFeedback('Kuis dimulai! Waktu 3 menit.', 'success');
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(quizTime / 60);
+            const seconds = quizTime % 60;
+            
+            // Format waktu: MM:SS
+            const timeString = `⏱️ ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const timerElement = document.getElementById('quiz-timer');
+            timerElement.textContent = timeString;
+            
+            // Ganti warna dan animasi saat waktu hampir habis
+            timerElement.classList.remove('timer-warning', 'timer-danger');
+            if (quizTime <= 30) { // 30 detik terakhir
+                timerElement.classList.add('timer-danger');
+            } else if (quizTime <= 60) { // 1 menit terakhir
+                timerElement.classList.add('timer-warning');
+            }
+            
+            // Cek jika waktu habis
+            if (quizTime <= 0) {
+                clearInterval(timerInterval);
+                showFeedback('⏰ Waktu habis! Kuis otomatis dikirim.', 'error');
+                submitQuiz();
+            }
+            
+            quizTime--;
+        }
+
+        function loadQuizQuestions() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            
+            quizQuestions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <p>Soal ${index + 1}: ${question.question}</p>
+                    ${question.options.map((option, optIndex) => `
+                        <label>
+                            <input type="radio" name="question${index}" value="${optIndex}" 
+                                   onchange="saveAnswer(${index}, ${optIndex})">
+                            ${option}
+                        </label>
+                    `).join('')}
+                `;
+                container.appendChild(questionDiv);
+            });
+            
+            updateProgress();
+        }
+
+        function saveAnswer(questionIndex, answerIndex) {
+            userAnswers[questionIndex] = answerIndex;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(answer => answer !== null).length;
+            const total = quizQuestions.length;
+            const progress = (answered / total) * 100;
+            
+            document.getElementById('progress-text').textContent = `Soal ${answered}/${total}`;
+            document.getElementById('quiz-progress').style.width = `${progress}%`;
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            quizStarted = false;
+            
+            const score = calculateScore();
+            
+            // Tampilkan hasil dengan detail
+            document.getElementById('score').innerHTML = `
+                <h3>🎊 Hasil Kuis</h3>
+                <p>Skor Anda: <strong>${score}/${quizQuestions.length}</strong></p>
+                <p>Status: ${score >= 7 ? '🎉 Lulus! Excellent!' : score >= 5 ? '👍 Cukup Baik!' : '❌ Perlu belajar lagi!'}</p>
+                <div style="margin-top: 1rem;">
+                    <button class="quiz-btn" onclick="showAnswerDetails()">📋 Lihat Jawaban Detail</button>
+                </div>
+            `;
             
             document.getElementById('submitButton').disabled = true;
-            document.querySelectorAll('#quizForm input[type="radio"]').forEach(radio => {
-                radio.disabled = true;
-            });
-            
             document.getElementById('resetButton').style.display = 'inline-block';
+            document.getElementById('startButton').disabled = false;
+            
+            showFeedback(`Jawaban telah dikirim! Skor: ${score}/${quizQuestions.length}`, 'success');
         }
 
-        function resetStyles() {
-            document.querySelectorAll('.question').forEach(questionDiv => {
-                questionDiv.classList.remove('correct', 'incorrect', 'celebrate');
+        function calculateScore() {
+            let score = 0;
+            quizQuestions.forEach((question, index) => {
+                if (userAnswers[index] === question.correct) {
+                    score++;
+                }
             });
+            return score;
+        }
+
+        function showAnswerDetails() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
             
-            document.querySelectorAll('.correct-answer').forEach(label => {
-                label.classList.remove('correct-answer');
+            quizQuestions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.correct;
+                
+                questionDiv.className = `question ${isCorrect ? 'correct' : 'incorrect'}`;
+                questionDiv.innerHTML = `
+                    <p>Soal ${index + 1}: ${question.question}</p>
+                    ${question.options.map((option, optIndex) => {
+                        let style = '';
+                        if (optIndex === question.correct) {
+                            style = 'background: #e8f5e9; font-weight: bold;';
+                        } else if (optIndex === userAnswer && !isCorrect) {
+                            style = 'background: #ffebee; color: #d32f2f;';
+                        }
+                        return `
+                            <label style="${style}">
+                                <input type="radio" name="question${index}" value="${optIndex}" 
+                                       ${userAnswer === optIndex ? 'checked' : ''} disabled>
+                                ${option} ${optIndex === question.correct ? ' ✓' : ''}
+                            </label>
+                        `;
+                    }).join('')}
+                    ${!isCorrect ? `
+                        <div class="correct-answer">
+                            Jawaban benar: ${question.options[question.correct]}
+                        </div>
+                    ` : ''}
+                `;
+                container.appendChild(questionDiv);
             });
         }
 
         function resetQuiz() {
-            resetStyles();
-            document.getElementById('quizForm').reset();
-            document.getElementById("score").innerHTML = "";
-            document.getElementById('submitButton').disabled = false;
-            document.querySelectorAll('#quizForm input[type="radio"]').forEach(radio => {
-                radio.disabled = false;
-            });
+            clearInterval(timerInterval);
+            quizStarted = false;
+            quizTime = 180;
+            
+            // Reset tampilan timer
+            document.getElementById('quiz-timer').textContent = '⏱️ 03:00';
+            document.getElementById('quiz-timer').className = '';
+            
+            // Reset kuis
+            document.getElementById('score').innerHTML = '';
+            document.getElementById('submitButton').disabled = true;
             document.getElementById('resetButton').style.display = 'none';
-            updateProgressBar();
+            document.getElementById('startButton').disabled = false;
+            document.getElementById('quiz-container').innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #666;">
+                    <p>Klik "Mulai Kuis" untuk memulai timer dan mengerjakan 10 soal pilihan ganda</p>
+                    <p><strong>Waktu: 3 menit</strong></p>
+                </div>
+            `;
+            document.getElementById('progress-text').textContent = 'Soal 0/10';
+            document.getElementById('quiz-progress').style.width = '0%';
+            
+            showFeedback('Kuis direset!', 'success');
         }
 
-        // --- Keyboard Navigation ---
-        document.addEventListener('keydown', (e) => {
-            const currentSection = document.querySelector('section.visible').id;
+        // ==================== GAME MATCHING ====================
+
+        function initMatchingGame() {
+            const wordColumn = document.getElementById('word-column');
+            const meaningColumn = document.getElementById('meaning-column');
             
-            if (currentSection === 'flashcard') {
-                switch(e.key) {
-                    case 'ArrowLeft':
-                        prevCard();
-                        break;
-                    case 'ArrowRight':
-                        nextCard();
-                        break;
-                            case ' ':
-                                if (flashcard) flashcard.classList.toggle('is-flipped');
-                                e.preventDefault();
-                                break;
-                }
+            if (!wordColumn || !meaningColumn) {
+                console.error("Element game tidak ditemukan");
+                return;
             }
             
-            // Number keys for navigation
-            if (['1', '2', '3', '4'].includes(e.key)) {
-                const sections = ['intro', 'materi', 'flashcard', 'latihan'];
-                showSection(sections[parseInt(e.key) - 1]);
-            }
+            wordColumn.innerHTML = '';
+            meaningColumn.innerHTML = '';
+            
+            // Acak urutan vocab (ambil 10 pertama)
+            const gameVocab = [...vocabData].slice(0, 10).sort(() => Math.random() - 0.5);
+            const shuffledMeanings = [...gameVocab].sort(() => Math.random() - 0.5);
+            
+            // Tambahkan kata Jepang
+            gameVocab.forEach((item, index) => {
+                const wordItem = document.createElement('div');
+                wordItem.className = 'word-item';
+                wordItem.textContent = item.japanese;
+                wordItem.dataset.meaning = item.meaning;
+                wordItem.onclick = () => selectWordItem(wordItem);
+                wordColumn.appendChild(wordItem);
+            });
+            
+            // Tambahkan arti Indonesia
+            shuffledMeanings.forEach((item, index) => {
+                const meaningItem = document.createElement('div');
+                meaningItem.className = 'meaning-item';
+                meaningItem.textContent = item.meaning;
+                meaningItem.dataset.meaning = item.meaning;
+                meaningItem.onclick = () => selectMeaningItem(meaningItem);
+                meaningColumn.appendChild(meaningItem);
+            });
+            
+            // Reset statistik
+            document.getElementById('matched-count').textContent = '0/10';
+            document.getElementById('attempt-count').textContent = '0';
+            
+            selectedWord = null;
+            selectedMeaning = null;
+            attemptCount = 0;
+            matchedPairs = 0;
+        }
 
-            // Show/hide keyboard shortcuts
-            if (e.key === '?') {
-                document.querySelector('.keyboard-shortcuts').classList.toggle('visible');
-            }
-        });
+        let selectedWord = null;
+        let selectedMeaning = null;
+        let attemptCount = 0;
+        let matchedPairs = 0;
 
-        // --- Quiz Progress Tracking ---
-        document.querySelectorAll('input[type="radio"]').forEach(radio => {
-            radio.addEventListener('change', updateProgressBar);
-        });
+        function selectWordItem(wordItem) {
+            if (wordItem.classList.contains('matched')) return;
+            
+            // Reset seleksi sebelumnya
+            document.querySelectorAll('.word-item.selected').forEach(item => {
+                if (item !== wordItem) item.classList.remove('selected');
+            });
+            document.querySelectorAll('.meaning-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            wordItem.classList.add('selected');
+            selectedWord = wordItem;
+            
+            checkMatch();
+        }
 
-        // --- Initialize Page ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Populate content
-            populateMateriTable();
+        function selectMeaningItem(meaningItem) {
+            if (meaningItem.classList.contains('matched')) return;
+            
+            // Reset seleksi sebelumnya
+            document.querySelectorAll('.meaning-item.selected').forEach(item => {
+                if (item !== meaningItem) item.classList.remove('selected');
+            });
+            document.querySelectorAll('.word-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            meaningItem.classList.add('selected');
+            selectedMeaning = meaningItem;
+            
+            checkMatch();
+        }
 
-            // Initialize flashcard element and attach handlers (robust for DOM timing)
-            flashcard = document.getElementById('flashcard');
-            if (flashcard) {
-                // clicking/touch handled inline via onclick attribute as a robust fallback
-                // also attach keyboard handler when the flashcard has focus
-                flashcard.addEventListener('keydown', (ev) => {
-                    if (ev.key === 'Enter' || ev.key === ' ') {
-                        ev.preventDefault();
-                        flashcard.classList.toggle('is-flipped');
+        function checkMatch() {
+            if (selectedWord && selectedMeaning) {
+                attemptCount++;
+                document.getElementById('attempt-count').textContent = attemptCount;
+                
+                // Cek apakah cocok berdasarkan arti
+                if (selectedWord.dataset.meaning === selectedMeaning.dataset.meaning) {
+                    // Cocok
+                    selectedWord.classList.add('matched');
+                    selectedMeaning.classList.add('matched');
+                    selectedWord.classList.remove('selected');
+                    selectedMeaning.classList.remove('selected');
+                    
+                    matchedPairs++;
+                    document.getElementById('matched-count').textContent = matchedPairs + '/10';
+                    
+                    showFeedback('✓ Cocok!', 'success');
+                    
+                    // Cek jika semua sudah cocok
+                    if (matchedPairs === 10) {
+                        showFeedback('🎉 Selamat! Anda menyelesaikan game!', 'success');
                     }
-                });
+                } else {
+                    // Tidak cocok
+                    showFeedback('✗ Tidak cocok, coba lagi!', 'error');
+                    setTimeout(() => {
+                        selectedWord.classList.remove('selected');
+                        selectedMeaning.classList.remove('selected');
+                    }, 1000);
+                }
+                
+                selectedWord = null;
+                selectedMeaning = null;
             }
+        }
 
-            // Flip button for accessibility / touch devices
-            const flipBtn = document.getElementById('flipButton');
-            if (flipBtn) {
-                flipBtn.addEventListener('click', () => {
-                    if (flashcard) flashcard.classList.toggle('is-flipped');
-                });
-            }
+        function resetMatchingGame() {
+            initMatchingGame();
+            showFeedback('Game diulang!', 'success');
+        }
 
-            // Show the first card after handlers are set
-            showFlashcard(currentCardIndex);
+        function checkAllMatches() {
+            showFeedback('Memeriksa semua kecocokan...', 'success');
+        }
 
-            // Show keyboard shortcuts briefly
+        // Fungsi feedback
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = message;
+            feedback.className = `feedback ${type}`;
+            feedback.style.display = 'block';
+            
             setTimeout(() => {
-                document.querySelector('.keyboard-shortcuts').classList.add('visible');
-                setTimeout(() => {
-                    document.querySelector('.keyboard-shortcuts').classList.remove('visible');
-                }, 5000);
-            }, 1000);
+                feedback.style.display = 'none';
+            }, 2000);
+        }
+
+        // Inisialisasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Aplikasi dimuat!");
+            
+            // Load data awal
+            loadMateriData();
+            
+            // Event listener untuk tombol cetak
+            document.getElementById('printMateriButton').addEventListener('click', function() {
+                window.print();
+            });
+            
+            // Pastikan beranda aktif
+            showSection('intro');
         });
     </script>
 </body>
